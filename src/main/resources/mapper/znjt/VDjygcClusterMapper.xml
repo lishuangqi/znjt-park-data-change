@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.spring.springboot.dao.znjt.VDjygcClusterDao">
+	<resultMap id="BaseResultMap" type="org.spring.springboot.domain.VDjygcCluster">
+		<result column="clxxbh" property="clxxbh" />
+		<result column="kkbh" property="kkbh" />
+		<result column="kkmc" property="kkmc" />
+		<result column="jgsk" property="jgsk" />
+		<result column="cdbh" property="cdbh" />
+		<result column="hphm" property="hphm" />
+		<result column="hpys" property="hpys" />
+		<result column="xsfxdm" property="xsfxdm" />
+		<result column="xsfx" property="xsfx" />
+		<result column="cllx" property="cllx" />
+		<result column="csys" property="csys" />
+		<result column="hpzl" property="hpzl" />
+		<result column="clsd" property="clsd" />
+		<result column="hptp" property="hptp" />
+		<result column="qjtp" property="qjtp" />
+	</resultMap>
+
+	<resultMap id="BaseResultMap1" type="org.spring.springboot.domain.QcsVDjygcMaster">
+		<result column="id" property="id" />
+		<result column="clxxbh" property="clxxbh" />
+		<result column="kkbh" property="kkbh" />
+		<result column="kkmc" property="kkmc" />
+		<result column="jgsk" property="jgsk" />
+		<result column="cdbh" property="cdbh" />
+		<result column="hphm" property="hphm" />
+		<result column="hpys" property="hpys" />
+		<result column="xsfxdm" property="xsfxdm" />
+		<result column="xsfx" property="xsfx" />
+		<result column="cllx" property="cllx" />
+		<result column="csys" property="csys" />
+		<result column="hpzl" property="hpzl" />
+		<result column="clsd" property="clsd" />
+		<result column="hptp" property="hptp" />
+		<result column="qjtp" property="qjtp" />
+	</resultMap>
+
+
+	<parameterMap id="VDjygcCluster" type="org.spring.springboot.domain.VDjygcCluster"/>
+
+	<sql id="Base_Column_List">
+		clxxbh,kkbh,kkmc,jgsk,cdbh,hphm,hpys,xsfxdm,xsfx,cllx,csys,hpzl,clsd,hptp,qjtp
+	</sql>
+
+	<select id="findByMaxClxxbh" parameterType="java.util.Map" resultType="java.lang.Long">
+		select NVL(max(pass_id), 0) clxxbh from  traffic_vehicle_pass
+	</select>
+
+	<select id="findByGreaterClxxbhForMaster" parameterType="java.lang.Long" resultMap="BaseResultMap1">
+		<![CDATA[
+			SELECT A.*, ROWNUM RN   FROM (select
+            t1.pass_id    clxxbh --车辆信息编号
+            ,t2.crossing_index    kkbh --卡口编号
+            ,t2.crossing_name  kkmc --卡口名称
+            ,t1.pass_time    jgsk  --经过时间
+            ,t1.lane_no    cdbh --车道编号
+            ,t1.plate_no    hphm --号牌号码
+            ,t1.plate_color    hpys --号牌颜色
+            ,t5.direction_name xsfx
+            ,t5.direction_index xsfxdm
+            ,decode(t1.vehicle_type,0,'X99',1,'K31',2,'K11',3,'K31',4,'K31','X99')  cllx--车辆类型
+            ,decode(t1.vehicle_color,1,'A',3,'B',8,'C',11,'D',5,'E',12,'F',9,'G',7,'H',10,'I',4,'J',6,'H','Z')    csys  --车身颜色
+            ,decode(t1.vehicle_type,0,'99',1,'01',2,'01','02')    hpzl  --号牌种类
+            ,t1.vehicle_speed    clsd  --车辆速度
+            ,decode(t3.platepicurl,null,null,'http://'||t4.ip_addr||':'||t4.hpp_port||t3.platepicurl)    hptp    --n    varchar2(300)    y
+            ,decode(t3.vehiclepicurl,null,null,'http://'||t4.ip_addr||':'||t4.hpp_port||t3.vehiclepicurl)    qjtp
+          from
+            traffic_vehicle_pass t1,
+            (select * from traffic_direction_info where del_flag=0)  t5,
+            v_djy_crossing_info  t2,
+            picurl_info t3,server_info t4
+          where
+            t1.crossing_id=t2.crossing_id
+            and t1.pass_id=t3.vehiclelsh and t3.picurltype=0
+            and t1.tfs_id=t4.server_id
+            and t1.crossing_id=t5.crossing_id(+)
+            and t1.direction_index=t5.direction_index(+)
+            and t1.pass_id > #{clxxbh} ) A WHERE   ROWNUM <= 500
+		]]>
+	</select>
+
+	<select id="findByGreaterClxxbh" parameterType="java.lang.Long" resultMap="BaseResultMap" >
+		<![CDATA[ select *
+			from  IVMS86X0.v_djygc
+			WHERE  jgsk>=sysdate-1 and clxxbh > #{clxxbh} AND rownum <= 100 ]]>
+	</select>
+
+</mapper>

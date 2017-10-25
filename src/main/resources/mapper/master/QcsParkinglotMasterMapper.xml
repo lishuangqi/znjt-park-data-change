@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.spring.springboot.dao.master.QcsParkinglogMasterDao">
+	<resultMap id="BaseResultMap" type="org.spring.springboot.domain.TParkInfoCluster">
+		<result column="parkid" property="parkid" />
+		<result column="allnumber" property="allnumber" />
+		<result column="occupiednumber" property="occupiednumber" />
+		<result column="schedulenumber" property="schedulenumber" />
+		<result column="freenumber" property="freenumber" />
+		<result column="updatetime" property="updatetime" />
+	</resultMap>
+
+
+	<select id="findByLastest" resultMap="BaseResultMap" parameterType="java.util.Map">
+ 			SELECT  PARKINGNAME as parkid,CREATEDATE as updatetime,TOTALBERTH as allnumber, ALREADYPARKING as occupiednumber,SURPLUS as freenumber,0 schedulenumber
+			FROM QCS_PARKINGLOT
+			WHERE CREATEDATE in (SELECT  MAX(CREATEDATE) as CREATEDATE from
+  				(select * from QCS_PARKINGLOT WHERE CREATEDATE
+  				 <if test="startDateStr != null and startDateStr != '' and endDateStr != null and endDateStr != ''">
+					between to_date(#{startDateStr,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+ 			 		and to_date(#{endDateStr,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+				</if>
+
+ 			 order by CREATEDATE DESC) t  GROUP BY PARKINGNAME)
+	</select>
+
+
+</mapper>

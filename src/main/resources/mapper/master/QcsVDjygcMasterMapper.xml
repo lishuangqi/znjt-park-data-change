@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.spring.springboot.dao.master.QcsVDjygcMasterDao">
+	<resultMap id="BaseResultMap" type="org.spring.springboot.domain.QcsVDjygcMaster">
+		<result column="id" property="id" />
+		<result column="clxxbh" property="clxxbh" />
+		<result column="kkbh" property="kkbh" />
+		<result column="kkmc" property="kkmc" />
+		<result column="jgsk" property="jgsk" />
+		<result column="cdbh" property="cdbh" />
+		<result column="hphm" property="hphm" />
+		<result column="hpys" property="hpys" />
+		<result column="xsfxdm" property="xsfxdm" />
+		<result column="xsfx" property="xsfx" />
+		<result column="cllx" property="cllx" />
+		<result column="csys" property="csys" />
+		<result column="hpzl" property="hpzl" />
+		<result column="clsd" property="clsd" />
+		<result column="hptp" property="hptp" />
+		<result column="qjtp" property="qjtp" />
+	</resultMap>
+
+	<parameterMap id="QcsVDjygcMaster" type="org.spring.springboot.domain.QcsVDjygcMaster"/>
+
+	<sql id="Base_Column_List">
+		id,clxxbh,kkbh,kkmc,jgsk,cdbh,hphm,hpys,xsfxdm,xsfx,cllx,csys,hpzl,clsd,hptp,qjtp
+	</sql>
+
+	<select id="findByMaxClxxbh" parameterType="java.util.Map" resultType="java.lang.Long">
+		select NVL(max(clxxbh), 0) clxxbh from QCS_V_DJYGC
+	</select>
+
+	<select id="findByGreaterClxxbh" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" />
+			from QCS_V_DJYGC
+			WHERE  jgsk>=sysdate-1 and clxxbh > #{clxxbh} AND rownum &lt;= 100
+	</select>
+
+	<insert id="insertSelective" parameterType="java.util.Map">
+		insert into QCS_V_DJYGC
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">ID,</if>
+			<if test="clxxbh != null">CLXXBH,</if>
+			<if test="kkbh != null">KKBH,</if>
+			<if test="kkmc != null">KKMC,</if>
+			<if test="jgsk != null">JGSK,</if>
+			<if test="cdbh != null">CDBH,</if>
+			<if test="hphm != null">HPHM,</if>
+			<if test="hpys != null">HPYS,</if>
+			<if test="xsfxdm != null">XSFXDM,</if>
+			<if test="xsfx != null">XSFX,</if>
+			<if test="cllx != null">CLLX,</if>
+			<if test="csys != null">CSYS,</if>
+			<if test="hpzl != null">HPZL,</if>
+			<if test="clsd != null">CLSD,</if>
+			<if test="hptp != null">HPTP,</if>
+			<if test="qjtp != null">QJTP,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">#{id,jdbcType=VARCHAR},</if>
+			<if test="clxxbh != null">#{clxxbh,jdbcType=BIGINT},</if>
+			<if test="kkbh != null">#{kkbh,jdbcType=VARCHAR},</if>
+			<if test="kkmc != null">#{kkmc,jdbcType=VARCHAR},</if>
+			<if test="jgsk != null">#{jgsk,jdbcType=TIMESTAMP},</if>
+			<if test="cdbh != null">#{cdbh,jdbcType=VARCHAR},</if>
+			<if test="hphm != null">#{hphm,jdbcType=VARCHAR},</if>
+			<if test="hpys != null">#{hpys,jdbcType=VARCHAR},</if>
+			<if test="xsfxdm != null">#{xsfxdm,jdbcType=INTEGER},</if>
+			<if test="xsfx != null">#{xsfx,jdbcType=VARCHAR},</if>
+			<if test="cllx != null">#{cllx,jdbcType=VARCHAR},</if>
+			<if test="csys != null">#{csys,jdbcType=VARCHAR},</if>
+			<if test="hpzl != null">#{hpzl,jdbcType=VARCHAR},</if>
+			<if test="clsd != null">#{clsd,jdbcType=INTEGER},</if>
+			<if test="hptp != null">#{hptp,jdbcType=VARCHAR},</if>
+			<if test="qjtp != null">#{qjtp,jdbcType=VARCHAR},</if>
+
+		</trim>
+	</insert>
+
+
+</mapper>
